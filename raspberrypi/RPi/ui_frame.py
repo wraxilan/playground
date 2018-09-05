@@ -54,6 +54,7 @@ class Frame:
     def __new_gpio_button(self, row, column, channel):
         # type: (int, int, int) -> Label
         btn = Label(self.__root, fg=Frame.COLOR_DISABLE, **self.__style)
+        # btn.config(background='#FFFFFF')
         btn.grid(row=row, column=column, padx=Frame.PADDING, pady=Frame.PADDING)
         self.__set_text(btn, channel)
         return btn
@@ -69,6 +70,19 @@ class Frame:
             self.__new_id_sc_label(row, col)
         else:
             self.__gpio_btn_dict[widget] = self.__new_gpio_button(row, col, widget)
+
+    def center(self, win):
+        win.update_idletasks()
+        width = win.winfo_width()
+        frm_width = win.winfo_rootx() - win.winfo_x()
+        win_width = width + 2 * frm_width
+        height = win.winfo_height()
+        titlebar_height = win.winfo_rooty() - win.winfo_y()
+        win_height = height + titlebar_height + frm_width
+        x = win.winfo_screenwidth() // 2 - win_width // 2
+        y = win.winfo_screenheight() // 2.5 - win_height // 2.5
+        win.geometry('{}x{}+{}+{}'.format(width, height, x, int(y)))
+        win.deiconify()
 
     def run(self, update, toggle, close):
         self.__root.title("GPIO EMULATOR")
@@ -131,6 +145,8 @@ class Frame:
                 else:
                     self.__populate(widget, len(widgets) - i, j)
 
+        # self.__root.config(background='#EEEEFF')
+        self.center(self.__root)
         self.__root.after(100, self.__update)
         self.__root.mainloop()
 
